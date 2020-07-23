@@ -1,0 +1,7 @@
+numpy
+scipy
+pandas
+gensim
+vaderSentiment
+flask
+gunicorn
