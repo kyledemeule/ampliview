@@ -1,0 +1,3 @@
+{% for review_line in review_lines %}
+    <span class="sentiment-{{ review_line['line_sentiment'] }}">{{ review_line["line"] }}</span>
+{% endfor %}

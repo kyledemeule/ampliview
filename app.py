@@ -1,36 +1,15 @@
 # app.py
 from flask import Flask, request, jsonify, render_template
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 app = Flask(__name__)
 
-@app.route('/getmsg/', methods=['GET'])
-def respond():
-    # Retrieve the name from url parameter
-    name = request.args.get("name", None)
-
-    # For debugging
-    print(f"got name {name}")
-
-    response = {}
-
-    # Check if user sent a name at all
-    if not name:
-        response["ERROR"] = "no name found, please send a name."
-    # Check if the user entered a number not a name
-    elif str(name).isdigit():
-        response["ERROR"] = "name can't be numeric."
-    # Now the user entered a valid name
-    else:
-        response["MESSAGE"] = f"Welcome {name} to our awesome platform!!"
-
-    # Return the response in json format
-    return jsonify(response)
-
-@app.route('/post/', methods=['POST'])
+@app.route('/analyze', methods=['POST'])
 def analyze():
-    param = request.form.get('review_text')
-    if param:
+    review_text = request.form.get('review_text')
+    if review_text:
+        review_lines = [process_line(l) for l in review_text.split(".")]
         return jsonify({
-            "review_html": "<span>Loved it!</span> <span>Would eat again.</span>",
+            "review_html": render_template('review.html', review_lines=review_lines),
             "helpful_prediction": 0.93
         })
     else:
@@ -42,6 +21,17 @@ def analyze():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+def process_line(line):
+    analyzer = SentimentIntensityAnalyzer()
+    vs = analyzer.polarity_scores(line)
+    if vs["compound"] >= 0.05:
+        line_sentiment = "positive"
+    elif vs["compound"] <= -0.05:
+        line_sentiment = "negative"
+    else:
+        line_sentiment = "neutral"
+    return {"line": line, "line_sentiment": line_sentiment}
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support

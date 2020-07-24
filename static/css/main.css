@@ -1,0 +1,9 @@
+.sentiment-positive {
+  color: green;
+}
+.sentiment-neutral {
+  color: gray;
+}
+.sentiment-negative {
+  color: red;
+}
