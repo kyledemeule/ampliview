@@ -1,1 +1,1 @@
-{% for review_line in review_lines %}<span class="sentiment-{{ review_line['line_sentiment'] }}">{{ review_line["line"] }}</span>{% endfor %}
+{% for review_line in review_lines %}<span data-toggle="tooltip" data-placement="top" title="Sentiment score: {{ review_line['compound_score'] }}" class="sentiment-{{ review_line['line_sentiment'] }}">{{ review_line["line"] }}</span>{% endfor %}

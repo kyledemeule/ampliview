@@ -48,7 +48,11 @@ def process_line(line):
         line_sentiment = "negative"
     else:
         line_sentiment = "neutral"
-    return {"line": line, "line_sentiment": line_sentiment}
+    return {
+        "line": line,
+        "line_sentiment": line_sentiment,
+        "compound_score": vs["compound"]
+    }
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support

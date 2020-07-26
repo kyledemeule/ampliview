@@ -42,11 +42,13 @@
                 posting.done(function( data ) {
                   console.log(data);
                   $('#review-analysis').html(data.review_html);
+                  $('[data-toggle="tooltip"]').tooltip()
                 });
                 posting.fail(function( data ) {
                   $('#review-analysis').html("Error.");
                 });
             });
+
         });
     </script>
   </body>
