@@ -7,3 +7,7 @@
 .sentiment-negative {
   color: red;
 }
+
+div#review-analysis {
+  white-space: pre-wrap;
+}
