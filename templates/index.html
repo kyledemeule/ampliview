@@ -23,6 +23,7 @@
         <div class="col-sm">
           <h2>Analysis</h2>
           <div id="review-analysis"></div>
+          <div id="useful-prediction"></div>
         </div>
       </div>
     </div>
@@ -42,7 +43,9 @@
                 posting.done(function( data ) {
                   console.log(data);
                   $('#review-analysis').html(data.review_html);
+                  $('#useful-prediction').html("Usefulness prediction: " + data.useful_prediction);
                   $('[data-toggle="tooltip"]').tooltip()
+
                 });
                 posting.fail(function( data ) {
                   $('#review-analysis').html("Error.");

@@ -1,6 +1,7 @@
 # app.py
 from flask import Flask, request, jsonify, render_template
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import numpy as np
 app = Flask(__name__)
 
 # for tokenizing reviews
@@ -24,10 +25,13 @@ def analyze():
     review_text = request.form.get('review_text')
     if review_text:
         review_lines = [process_line(l) for l in sentence_tokenizer.tokenize(review_text)]
-        print(review_lines)
+        useful_prediction_val = predict_usefulness(
+            len(review_text),
+            len(review_lines)
+        )
         return jsonify({
             "review_html": render_template('review.html', review_lines=review_lines),
-            "helpful_prediction": 0.93
+            "useful_prediction": useful_prediction_val
         })
     else:
         return jsonify({
@@ -53,6 +57,11 @@ def process_line(line):
         "line_sentiment": line_sentiment,
         "compound_score": vs["compound"]
     }
+
+def predict_usefulness(char_length, num_sentences):
+    model_params = {'intercept': -4.121402521392098, 'log_char_length': 0.6190290290266008, 'log_num_sentences': 0.10444849122310086}
+    linear_val = model_params["intercept"] + model_params["log_char_length"] * np.log(char_length) + model_params["log_num_sentences"] * np.log(num_sentences)
+    return 1 / (1 + np.exp(-1.0 * linear_val))
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
