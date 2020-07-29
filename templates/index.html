@@ -9,20 +9,21 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-    <title>Review Optimizer</title>
+    <title>Ampliview - Amplify your Reviews</title>
   </head>
   <body>
-    <h1>Review Writer</h1>
+    <h1>Ampliview</h1>
     <div class="container">
       <div class="row">
         <div class="col-md">
           <h2>Review</h2>
-          <textarea id="review-text"></textarea>
-          <button type="button" id="analyze-button">Analyze</button>
+          <textarea id="review-text" rows="20"></textarea>
+          <button type="button" id="analyze-button" class="btn btn-primary">Analyze</button>
         </div>
         <div class="col-sm">
           <h2>Analysis</h2>
           <div id="review-analysis"></div>
+          <h5>Predicted Usefulness Score:</h5>
           <div id="useful-prediction"></div>
         </div>
       </div>
@@ -34,25 +35,48 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script>
-        $(document).ready(function() {
-            $("#analyze-button").click(function() {
-                var review_text = $("#review-text").val();
-                $('#review-analysis').html("Loading...");
+      function analyze_review() {
+        var review_text = $("#review-text").val();
+        $('#review-analysis').html("Loading...");
+        analyze_button_loading();
 
-                var posting = $.post("analyze", { review_text: review_text } );
-                posting.done(function( data ) {
-                  console.log(data);
-                  $('#review-analysis').html(data.review_html);
-                  $('#useful-prediction').html("Usefulness prediction: " + data.useful_prediction);
-                  $('[data-toggle="tooltip"]').tooltip()
-
-                });
-                posting.fail(function( data ) {
-                  $('#review-analysis').html("Error.");
-                });
-            });
-
+        var posting = $.post("analyze", { review_text: review_text } );
+        posting.done(function( data ) {
+          if (data.review_html) {
+            $('#review-analysis').html(data.review_html);
+            $('#useful-prediction').html(data.progress_html);
+            $('[data-toggle="tooltip"]').tooltip()
+          } else {
+            $('#review-analysis').html("No review found.");
+            $('#useful-prediction').html("");
+          }
         });
+        posting.fail(function( data ) {
+            $('#review-analysis').html("There was an error analyzing the review.");
+            $('#useful-prediction').html("");
+        });
+        posting.always(function( data ) {
+            analyze_button_enable();
+        });
+      }
+
+      function analyze_button_loading() {
+        $('#analyze-button').prop('disabled', true);
+        $('#analyze-button').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...');
+      }
+
+      function analyze_button_enable() {
+        $('#analyze-button').html("Analyze");
+        $('#analyze-button').prop('disabled', false);
+      }
+
+      $(document).ready(function() {
+          $("#analyze-button").click(function() {
+            analyze_review();
+          });
+
+          analyze_review();
+      });
     </script>
   </body>
 </html>

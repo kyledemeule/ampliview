@@ -11,3 +11,11 @@
 div#review-analysis {
   white-space: pre-wrap;
 }
+
+textarea#review-text {
+    width: 100%;
+}
+
+#useful-prediction {
+    width: 100px;
+}

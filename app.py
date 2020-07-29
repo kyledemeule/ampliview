@@ -5,6 +5,7 @@ import numpy as np
 app = Flask(__name__)
 
 # for tokenizing reviews
+# from https://stackoverflow.com/questions/33139531/preserve-empty-lines-with-nltks-punkt-tokenizer/33456191
 import nltk
 import nltk.tokenize.punkt as pkt
 nltk.download('punkt')
@@ -31,12 +32,27 @@ def analyze():
         )
         return jsonify({
             "review_html": render_template('review.html', review_lines=review_lines),
+            "progress_html": render_template('progress.html',
+                useful_prediction_val=useful_prediction_val,
+                useful_prediction_int=int(useful_prediction_val * 100),
+                useful_prediction_color_class=get_prediction_color_class(useful_prediction_val),
+            ),
             "useful_prediction": useful_prediction_val
         })
     else:
         return jsonify({
-            "ERROR": "no name found, please send a name."
+            "error": "no review found."
         })
+
+# no idea why this has to be done outside the template
+def get_prediction_color_class(predicted_val):
+    if predicted_val > 0.8:
+        return "bg-success"
+    elif predicted_val > 0.5:
+        return "bg-warning"
+    else:
+        return "bg-danger"
+
 
 # A welcome message to test our server
 @app.route('/')
