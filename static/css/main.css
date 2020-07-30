@@ -16,6 +16,14 @@ textarea#review-text {
     width: 100%;
 }
 
+main {
+    padding-bottom: 20px;
+}
+
 #useful-prediction {
     width: 100px;
+}
+
+#score {
+    float: right;
 }
