@@ -54,7 +54,7 @@
           </div>
           <div class="col-sm">
             <div>
-            <h5 id="score">Usefulness score<span id="useful-prediction"></span></h5>
+            <h5 id="score" data-toggle="popover" data-placement="left" title="Usefulness Score" data-html=true data-content="{% include 'useful_popover.html' %}" data-trigger="hover">Usefulness score<span id="useful-prediction"></span></h5>
             <h2>Analysis</h2>
             </div>
             <div id="review-analysis"></div>
@@ -85,7 +85,8 @@
           if (data.review_html) {
             $('#review-analysis').html(data.review_html);
             $('#useful-prediction').html(data.progress_html);
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover();
           } else {
             $('#review-analysis').html("No review found.");
             $('#useful-prediction').html("");

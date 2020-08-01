@@ -52,7 +52,7 @@ def get_prediction_color_class(predicted_val):
         return ""
     elif predicted_val > 0.4:
         return "bg-info"
-    elif predicted_val > 0.15:
+    elif predicted_val > 0.2:
         return "bg-warning"
     else:
         return "bg-danger"
