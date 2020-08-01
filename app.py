@@ -83,6 +83,11 @@ def predict_usefulness(char_length, num_sentences):
     linear_val = model_params["intercept"] + model_params["log_char_length"] * np.log(char_length) + model_params["log_num_sentences"] * np.log(num_sentences)
     return 1 / (1 + np.exp(-1.0 * linear_val))
 
+@app.route('/sentiment')
+def sentiment():
+    return render_template('sentiment.html')
+
+
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
     app.run(threaded=True, port=5000)
