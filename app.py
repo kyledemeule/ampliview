@@ -48,11 +48,11 @@ def analyze():
 def get_prediction_color_class(predicted_val):
     if predicted_val > 0.8:
         return "bg-success"
-    elif predicted_val > 0.6:
+    elif predicted_val > 0.7:
         return ""
-    elif predicted_val > 0.4:
+    elif predicted_val > 0.5:
         return "bg-info"
-    elif predicted_val > 0.2:
+    elif predicted_val > 0.25:
         return "bg-warning"
     else:
         return "bg-danger"

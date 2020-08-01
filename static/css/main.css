@@ -1,11 +1,17 @@
 .sentiment-positive {
-  color: green;
+  background-color:  #cdffd8;
+  color: #24292e;
 }
-.sentiment-neutral {
+.sentiment-super-positive {
+    background-color: #bef5cb;
+    color: #24292e;
+}
+.ssentiment-neutral {
   color: gray;
 }
 .sentiment-negative {
-  color: red;
+  background-color: #ffeef0;
+  color: #24292e;
 }
 
 div#review-analysis {
