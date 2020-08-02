@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify, render_template
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import numpy as np
+import statistics
 app = Flask(__name__)
 
 # sample reviews
@@ -40,10 +41,11 @@ def analyze():
     review_text = request.form.get('review_text')
     if review_text:
         review_lines = [process_line(l) for l in sentence_tokenizer.tokenize(review_text)]
-        useful_prediction_val = predict_usefulness(
-            len(review_text),
-            len(review_lines)
-        )
+        # use first model for short reviews
+        if(len(review_text) <= 100):
+            useful_prediction_val = predict_usefulness_short(len(review_text), len(review_lines))
+        else:
+            useful_prediction_val = predict_usefulness_long(review_lines)
         return jsonify({
             "review_html": render_template('review.html', review_lines=review_lines),
             "progress_html": render_template('progress.html',
@@ -92,9 +94,34 @@ def process_line(line):
         "compound_score": vs["compound"]
     }
 
-def predict_usefulness(char_length, num_sentences):
+def predict_usefulness_short(char_length, num_sentences):
     model_params = {'intercept': -4.121402521392098, 'log_char_length': 0.6190290290266008, 'log_num_sentences': 0.10444849122310086}
     linear_val = model_params["intercept"] + model_params["log_char_length"] * np.log(char_length) + model_params["log_num_sentences"] * np.log(num_sentences)
+    return 1 / (1 + np.exp(-1.0 * linear_val))
+
+def predict_usefulness_long(processed_lines):
+    positive_sentences = []
+    negative_sentences = []
+    neutral_sentences = []
+    for processed_line in processed_lines:
+        if processed_line["compound_score"] >= 0.05:
+            positive_sentences.append(processed_line["line"].lower())
+        elif processed_line["compound_score"] <= -0.05:
+            negative_sentences.append(processed_line["line"].lower())
+        else:
+            neutral_sentences.append(processed_line["line"].lower())
+
+    log_pos_sentence_count = np.log(len(set(positive_sentences)) + 1)
+    log_neg_sentence_count = np.log(len(set(negative_sentences)) + 1)
+    log_neut_sentence_count = np.log(len(set(neutral_sentences)) + 1)
+    print(len(set(positive_sentences)), len(set(negative_sentences)), len(set(neutral_sentences)))
+
+    model_params = {'intercept': -0.8433776961797712, 'review_distinct_pos_sentences': 0.0883927794156043, 'review_distinct_neg_sentences': 0.10833381656026096, 'review_distinct_neut_sentences': 0.06172328962965702}
+    linear_val = model_params["intercept"] \
+        + model_params["review_distinct_pos_sentences"] * len(set(positive_sentences)) \
+        + model_params["review_distinct_neg_sentences"] * len(set(negative_sentences)) \
+        + model_params["review_distinct_neut_sentences"] * len(set(neutral_sentences))
+    print(linear_val)
     return 1 / (1 + np.exp(-1.0 * linear_val))
 
 @app.route('/sentiment')

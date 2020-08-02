@@ -12,27 +12,28 @@
 <img src="{{ url_for('static', filename='images/useful_75.png') }}" />
 <img src="{{ url_for('static', filename='images/useful_90.png') }}" />
 </div>
-<p>A logistic regression model was trained using <a href="https://www.statsmodels.org" target="_blank">statsmodel</a>. You can see the details of the model here:</p>
+<p>A logistic regression model was trained on a sample of 50k Yelp reviews using <a href="https://www.statsmodels.org" target="_blank">statsmodel</a>. You can see the details of the model here:</p>
 <pre class="center"><code>
-    Optimization terminated successfully.
-         Current function value: 0.645463
+Optimization terminated successfully.
+         Current function value: 0.653254
          Iterations 5
                            Logit Regression Results                           
 ==============================================================================
-Dep. Variable:              is_useful   No. Observations:               706646
-Model:                          Logit   Df Residuals:                   706643
-Method:                           MLE   Df Model:                            2
-Date:                Mon, 27 Jul 2020   Pseudo R-squ.:                 0.06707
-Time:                        00:33:32   Log-Likelihood:            -4.5611e+05
-converged:                       True   LL-Null:                   -4.8890e+05
+Dep. Variable:              is_useful   No. Observations:                50000
+Model:                          Logit   Df Residuals:                    49996
+Method:                           MLE   Df Model:                            3
+Date:                Fri, 31 Jul 2020   Pseudo R-squ.:                 0.05565
+Time:                        15:49:04   Log-Likelihood:                -32663.
+converged:                       True   LL-Null:                       -34588.
 Covariance Type:            nonrobust   LLR p-value:                     0.000
-=====================================================================================
-                        coef    std err          z      P>|z|      [0.025      0.975]
--------------------------------------------------------------------------------------
-intercept            -4.1214      0.027   -154.771      0.000      -4.174      -4.069
-log_char_length       0.6190      0.006    100.980      0.000       0.607       0.631
-log_num_sentences     0.1044      0.007     14.572      0.000       0.090       0.118
-=====================================================================================
+======================================================================================================
+                                         coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------------------------------
+intercept                             -1.4228      0.026    -54.234      0.000      -1.474      -1.371
+log_review_distinct_pos_sentences      0.4795      0.016     29.455      0.000       0.448       0.511
+log_review_distinct_neg_sentences      0.3440      0.017     20.831      0.000       0.312       0.376
+log_review_distinct_neut_sentences     0.3241      0.015     21.372      0.000       0.294       0.354
+======================================================================================================
 </code></pre>
 <p>The model was trained only on reviews from Yelp, so it can only rank and compare the properties of useful reviews from less useful reviews. It was not designed to distinguish reviews from non-reviews, so if non-reviews are inputted that have similar properties to useful reviews (e.g. are fairly long) they will also score highly on the "Usefulness Score", despite them obviously not being useful as Yelp reviews.</p>
 {% endblock %}
