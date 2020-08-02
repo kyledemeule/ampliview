@@ -87,6 +87,9 @@ def predict_usefulness(char_length, num_sentences):
 def sentiment():
     return render_template('sentiment.html')
 
+@app.route('/useful-score')
+def usefulness():
+    return render_template('usefulness.html')
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support

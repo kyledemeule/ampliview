@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Usefulness Score</h2>
+<p>To help users write reviews that are more useful, Ampliview provides a "Usefulness Score" in it's analysis of the review. Over 1 million reviews in Yelp were analyzed, and trends that positively correlated with Yelp reviews being marked as useful have been incorporated. For example if we look at reviews by their number of sentences, and graph the percentage of those that had atleast one useful vote:</p>
+<p><img class="center" src="{{ url_for('static', filename='images/num_sentences.png') }}" /></p>
+<p>We can see a positive correlation between number of sentences and usefulness of reviews. In fact this relationship looks logarithmic: as reviews increased from 1 to 18, there is a steep incline in the ratio that are marked as useful. After around 18 sentences reviews continued to become more useful, but at a lower rate than before. Other features were also included, which can be read about in the <a href='#'>written report</a>.</p>
+<p>As the users continues to write and analyze their review, the updated score will be shown. The score is shown as a percentage, indicating the probability that the review would be found useful by readers at Yelp. This can help users with writing reviews in multiple ways: it can help them fine tune parts of their review by giving them immediate feedback, and can also provide motivation to keep writing their review and add more detail. The scores are shown as a percentage, with different colors as the score increases:</p>
+<div class="text-center">
+<img src="{{ url_for('static', filename='images/useful_20.png') }}" />
+<img src="{{ url_for('static', filename='images/useful_40.png') }}" />
+<img src="{{ url_for('static', filename='images/useful_60.png') }}" />
+<img src="{{ url_for('static', filename='images/useful_75.png') }}" />
+<img src="{{ url_for('static', filename='images/useful_90.png') }}" />
+</div>
+<p>A logistic regression model was trained using <a href="https://www.statsmodels.org" target="_blank">statsmodel</a>. You can see the details of the model here:</p>
+<pre class="center"><code>
+    Optimization terminated successfully.
+         Current function value: 0.645463
+         Iterations 5
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:              is_useful   No. Observations:               706646
+Model:                          Logit   Df Residuals:                   706643
+Method:                           MLE   Df Model:                            2
+Date:                Mon, 27 Jul 2020   Pseudo R-squ.:                 0.06707
+Time:                        00:33:32   Log-Likelihood:            -4.5611e+05
+converged:                       True   LL-Null:                   -4.8890e+05
+Covariance Type:            nonrobust   LLR p-value:                     0.000
+=====================================================================================
+                        coef    std err          z      P>|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+intercept            -4.1214      0.027   -154.771      0.000      -4.174      -4.069
+log_char_length       0.6190      0.006    100.980      0.000       0.607       0.631
+log_num_sentences     0.1044      0.007     14.572      0.000       0.090       0.118
+=====================================================================================
+</code></pre>
+<p>The model was trained only on reviews from Yelp, so it can only rank and compare the properties of useful reviews from less useful reviews. It was not designed to distinguish reviews from non-reviews, so if non-reviews are inputted that have similar properties to useful reviews (e.g. are fairly long) they will also score highly on the "Usefulness Score", despite them obviously not being useful as Yelp reviews.</p>
+{% endblock %}
