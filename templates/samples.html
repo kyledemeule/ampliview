@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Sample Reviews</h2>
+<p>Here are some reviews you can use to see how Ampliview works. Clicking the links will open the review analyzer and pre-populate the review. Hover over the link to see the full review.</p>
+<table class="table table-borderless table-sm table-hover">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Review Start</th>
+      <th scope="col">Helpful Votes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sample_review in sample_reviews %}
+    <tr>
+      <th scope="row">{{loop.index}}</th>
+      <td><a href='/?r={{loop.index - 1}}' data-toggle="popover" data-placement="right" title="Review Text" data-content="{{ sample_review['review_text'] }}" data-trigger="hover">{{ sample_review['review_text']|truncate(50) }}</a></td>
+      <td>{{ sample_review['useful_votes'] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
