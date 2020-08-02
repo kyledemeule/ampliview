@@ -75,12 +75,15 @@
         analyze_button_loading();
 
         var posting = $.post("analyze", { review_text: review_text } );
-        posting.done(function( data ) {
+        posting.done(function(data) {
           if (data.review_html) {
             $('#review-analysis').html(data.review_html);
             $('#useful-prediction').html(data.progress_html);
             $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
+          } else if (data.error) {
+            $('#review-analysis').html("<p>" + data.error + "</p><p>Try a <a href='/' id='default-sample-review'>sample review.</a></p>");
+            $('#useful-prediction').html("");
           } else {
             $('#review-analysis').html("<p>No review found.</p><p>Try a <a href='/' id='default-sample-review'>sample review.</a></p>");
             $('#useful-prediction').html("");

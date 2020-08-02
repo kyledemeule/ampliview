@@ -12,7 +12,7 @@ sample_reviews = [
 ]
 
 sample_reviews = [
-    {"useful_votes": 0, "review_text": "I went to Cotto. The pizza was good. They sometimes have specials on pizza or pasta, so you have to look at their website.\n\nThe location is not great though, I couldn't find parking. It's so terrible I almost get into an accident every time.\n\nBut the food is so delicious. I highly recommend it."},
+    {"useful_votes": "NA", "review_text": "I went to Cotto. The pizza was good. They sometimes have specials on pizza or pasta, so you have to look at their website.\n\nThe location is not great though, I couldn't find parking. It's so terrible I almost get into an accident every time.\n\nBut the food is so delicious. I highly recommend it."},
     {"useful_votes": 1, "review_text": "Pretty good dinner with a nice selection of food. Open 24 hours and provide nice service. I usually go here after a night of partying. My favorite dish is the Fried Chicken Eggs Benedict."},
     {"useful_votes": 0, "review_text": "Good truck stop dining at the right price. We love coming here on the weekends when we don't feel like cooking."},
     {"useful_votes": 16, "review_text": "This local BBQ icon was on our list of dining destinations when Santi and I were planning our trip to Madison. Located nearby the airport, the well-lit, wooded interior starts with a pathway that leads to the large overhead menu, the ordering counter, and the dining area. Adding to the décor are the statewide accolades all around the walls. On this evening, the casual atmosphere happened to be unexpectedly subdued, quite unlike the other BBQ restaurants I've visited.   \n\nWe shared a Combination Meal ($17.75) that included our choice of 1/3 Slab, Smoked Pork Shoulder Sandwich, and extra serving of smoked pork shoulder, Cole Slaw, and BBQ Baked Beans. The Slab/Pork Ribs were smoky, tender, and the meat easily peeled off the bones. There was an excellent hint of smoke to deepen its flavor, and that was further enhanced by the BBQ sauce to provide a sweet higher note, strong black peppery secondary, and anchored by a noticeable spicy kick that reverberates with good hops. For the price, there wasn't enough meat on the ribs, but the flavors were still sensational. The dinner roll that this dish came with was sweet, soft, and spongy. I loved it.\n\nThe Pork Shoulder Sandwich was excellent as well. The pork shoulders were tender without one single dry spot--perfectly executed and delicious without the BBQ sauce. The meat was flavorful and deepened by its smoky flavor that coupled perfectly with the well-rounded, full-bodied spicy BBQ sauce. I absolutely loved it except for the buns that turned out flaky with hollow spots and lacking flavor. We finished the meat without getting into the buns very much. This sandwich could have been so much better with a bun of higher quality. \n\nThe BBQ Baked Beans were smooth, sweet, and delicious. The Slaw on the other hand was too wet with a weak texture. Compared to other BBQ joints, their sides could use more varieties such as green beans, collard greens, yam and other possibilities to complement this resounding BBQ. They also have two sauces, and I wished we had the option of trying both at the table.\n\nService was impatient at first, as we were initially tentative and indecisive about our choices. I wished the server could have been much more educational with their strengths and limitations to help us make the right decisions on this very first visit. However, she later became much more warm, accessible, attentive, and helpful towards the middle and end of the meal. Price-wise, their items were pricy with the portions we received. I'd be very interested in coming back to try their Beef Briskets and Chicken Dinner."},
@@ -39,7 +39,11 @@ sentence_tokenizer = pkt.PunktSentenceTokenizer(lang_vars=CustomLanguageVars())
 @app.route('/analyze', methods=['POST'])
 def analyze():
     review_text = request.form.get('review_text')
-    if review_text:
+    if review_text and len(review_text) > 10000:
+        return jsonify({
+            "error": "Only reviews of less than 10K characters are supported."
+        })
+    elif review_text:
         review_lines = [process_line(l) for l in sentence_tokenizer.tokenize(review_text)]
         # use first model for short reviews
         if(len(review_text) <= 100):
@@ -57,7 +61,7 @@ def analyze():
         })
     else:
         return jsonify({
-            "error": "no review found."
+            "error": "No review found."
         })
 
 # no idea why this has to be done outside the template
