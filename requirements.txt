@@ -26,6 +26,6 @@ scipy==1.5.1
 six==1.15.0
 smart-open==2.1.0
 tqdm==4.48.0
-urllib3==1.25.10
+urllib3==1.26.5
 vaderSentiment==3.3.2
 Werkzeug==1.0.1
