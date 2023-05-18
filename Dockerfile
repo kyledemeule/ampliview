@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.6
 
 ENV APP_HOME /ampliview
 WORKDIR $APP_HOME
